@@ -1,0 +1,119 @@
+{
+    "ConfigVersion": 1,
+    "CVars": {
+        "gEnhancements": {
+            "Camera": {
+                "FixTargettingCameraSnap": 1,
+                "FreeLook": {
+                    "Enable": 1
+                }
+            },
+            "Cutscenes": {
+                "SkipIntroSequence": 1,
+                "SkipToFileSelect": 1
+            },
+            "Fixes": {
+                "CompletedHeartContainerAudio": 1,
+                "ControlCharacters": 1,
+                "DekuButlerFixShockLoopAnimation": 1,
+                "FierceDeityZTargetMovement": 1
+            },
+            "Graphics": {
+                "ActorCullingAccountsForWidescreen": 1,
+                "BowReticle": 1,
+                "3DItemDrops": 1
+            },
+            "Masks": {
+                "FastTransformation": 1,
+                "EasyMaskEquip": 1
+            },
+            "Playback": {
+                "DpadOcarina": 1,
+                "NoDropOcarinaInput": 1
+            },
+            "Player": {
+                "ClimbSpeed": 3,
+                "InstantPutaway": 1,
+                "FastFlowerLaunch": 1,
+                "FasterPushAndPull": 1,
+                "PreventDiveOverWater": 1,
+                "UnsheatheWithoutSlashing": 1
+            },
+            "Restorations": {
+                "OoTFasterSwim": 1
+            },
+            "Saving": {
+                "Autosave": 1,
+                "PersistentOwlSaves": 1,
+                "RememberSaveLocation": 1
+            },
+            "Songs": {
+                "BetterSongOfDoubleTime": 1,
+                "FasterSongPlayback": 1,
+                "SkipSoTCutscenes": 1
+            },
+            "Timesavers": {
+                "FastChests": 1,
+                "FasterSceneTransitions": 1,
+                "FasterBottles": 1
+            }
+        },
+        "gFixes": {
+            "FixAmmoCountEnvColor": 1,
+            "FixButtonEnvColor": 1,
+            "FixEponaStealingSword": 1,
+            "FixIkanaGreatFairyFountainColor": 1
+        },
+        "gHudEditor": {
+            "Minimap": {
+                "Mode": 4,
+                "Position": {
+                    "X": 295,
+                    "Y": 220
+                }
+            },
+            "Hearts": {
+                "Mode": 3,
+                "Position": {
+                    "X": 30,
+                    "Y": 26
+                }
+            },
+            "Magic": {
+                "Mode": 3,
+                "Position": {
+                    "X": 18,
+                    "Y": 34
+                }
+            },
+            "Rupees": {
+                "Mode": 3,
+                "Position": {
+                    "X": 26,
+                    "Y": 206
+                }
+            },
+            "Keys": {
+                "Mode": 3,
+                "Position": {
+                    "X": 26,
+                    "Y": 190
+                }
+            },
+            "Skulltulas": {
+                "Mode": 3,
+                "Position": {
+                    "X": 26,
+                    "Y": 190
+                }
+            },
+            "Timers": {
+                "Mode": 3,
+                "Position": {
+                    "X": 26,
+                    "Y": 46
+                }
+            }
+        }
+    }
+}

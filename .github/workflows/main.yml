@@ -105,7 +105,7 @@ jobs:
         mkdir -p out/switch/2ship
         cp "$(find build-switch -name '*.nro' | head -n1)" out/switch/2ship/2ship.nro
         cp o2r/2ship.o2r out/switch/2ship/
-        cp switch-pack/2ship2harkinian.json out/switch/2ship/
+        cp switch-pack/settings.json out/switch/2ship/2ship2harkinian.json
         cp switch-pack/README.txt out/ || true
     - name: Upload
       uses: actions/upload-artifact@v7
