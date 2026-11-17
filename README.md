@@ -27,7 +27,7 @@ better Song of Double Time, autosave and more).
 
 ## Install
 
-1. Download **MM-Modern-Switch** from the latest successful run on the [Actions](../../actions) tab.
+1. Download **MM-Modern-Switch.zip** from the [latest release](../../releases/latest).
 2. Copy its `switch` folder to the root of your SD card.
 3. Add **`mm.o2r`** to `/switch/2ship/`. Make it from your own Majora's Mask N64 (US) ROM with
    2Ship2Harkinian **5.0.1 "Battler Bravo"** on PC.

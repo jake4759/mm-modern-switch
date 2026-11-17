@@ -76,6 +76,8 @@ jobs:
 
   build-switch:
     needs: generate-2ship-otr
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     container:
       image: devkitpro/devkita64:latest
@@ -113,3 +115,16 @@ jobs:
         name: MM-Modern-Switch
         path: out
         retention-days: 30
+    - name: Zip for release
+      run: cd out && zip -r ../MM-Modern-Switch.zip .
+    - name: Publish "latest" release
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: latest
+        name: MM Modern for Switch (latest build)
+        body: |
+          Download MM-Modern-Switch.zip, copy its "switch" folder to your SD card, and add your own mm.o2r
+          (made with 2Ship2Harkinian 5.0.1 on PC) to /switch/2ship/. See the README for details.
+        files: MM-Modern-Switch.zip
+        make_latest: true
