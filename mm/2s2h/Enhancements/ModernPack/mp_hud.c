@@ -325,6 +325,8 @@ void ModernPack_AfterInterfaceDraw(PlayState* play) {
         Hud_Draw(play, &gfx);
         Switcher_Draw(play, &gfx);
         QuickSave_Draw(play, &gfx);
+        Songbook_Draw(play, &gfx);
+        CutsceneFF_Draw(play, &gfx);
         Ui_End(&gfx);
         gfxCtx->overlay.p = gfx;
     }

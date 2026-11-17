@@ -51,6 +51,11 @@ void QuickSave_Update(PlayState* play, Input* input);
 void PauseSave_Update(PlayState* play, Input* input);
 void ThirdPersonAim_Update(PlayState* play, Input* input);
 s32 MP_DoSave(PlayState* play); // returns true if saved
+void CutsceneFF_UpdatePrompt(PlayState* play, Input* input);
+s32 Songbook_Update(PlayState* play, Input* input);
+void Songbook_AfterOcarinaRead(void);
+void CutsceneFF_BeforeUpdate(PlayState* play);
+void CutsceneFF_AfterUpdate(void);
 s32 MP_CanSaveHere(PlayState* play);
 
 // Called from the game code (edited in place)

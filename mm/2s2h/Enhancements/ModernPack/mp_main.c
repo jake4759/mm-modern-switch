@@ -246,12 +246,16 @@ void ModernPack_OnPlayUpdateMain(PlayState* play) {
 
     QuickSave_Update(play, input);
 
-    if (Switcher_Update(play, input)) {
+    if (Songbook_Update(play, input)) {
+        ClearInput(input);
+    } else if (Switcher_Update(play, input)) {
         ClearInput(input);
     } else {
         AutoShield_Update(play, input);
         ThirdPersonAim_Update(play, input);
     }
+
+    CutsceneFF_UpdatePrompt(play, input);
 
     // Tatl button (C-Up) only talks to Tatl: no first-person view. D-Pad Right also talks to Tatl.
     if ((gSaveContext.gameMode == GAMEMODE_NORMAL) && !IS_PAUSED(&play->pauseCtx) &&

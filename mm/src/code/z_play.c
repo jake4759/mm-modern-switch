@@ -1113,7 +1113,15 @@ void Play_UpdateMain(PlayState* this) {
     }
 }
 
+static void Play_Update_Vanilla(PlayState* this);
+// MM Modern: cutscene skip runs extra updates after the normal one.
 void Play_Update(PlayState* this) {
+    CutsceneFF_BeforeUpdate(this);
+    Play_Update_Vanilla(this);
+    CutsceneFF_AfterUpdate();
+}
+
+static void Play_Update_Vanilla(PlayState* this) {
     if (!sBombersNotebookOpen) {
         if (this->pauseCtx.bombersNotebookOpen) {
             sBombersNotebookOpen = true;

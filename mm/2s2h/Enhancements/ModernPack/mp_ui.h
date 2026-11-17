@@ -33,4 +33,6 @@ void Ui_ButtonPrompt(Gfx** gfxP, f32 xRight, f32 y, const char* button, const ch
 void Switcher_Draw(PlayState* play, Gfx** gfxP);
 void Hud_Draw(PlayState* play, Gfx** gfxP);
 void QuickSave_Draw(PlayState* play, Gfx** gfxP);
+void CutsceneFF_Draw(PlayState* play, Gfx** gfxP);
+void Songbook_Draw(PlayState* play, Gfx** gfxP);
 #endif

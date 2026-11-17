@@ -1,3 +1,4 @@
+#include "2s2h/Enhancements/ModernPack/mp_common.h"
 #include "global.h"
 #include "z64voice.h"
 
@@ -2095,6 +2096,8 @@ void AudioOcarina_ReadControllerInput(void) {
 
     // 2S2H [Enhancement] Apply custom ocarina controls via GameInteractor
     sOcarinaInputButtonCur |= GameInteractor_CustomOcarinaControls(input);
+
+    Songbook_AfterOcarinaRead(); // MM Modern: songbook open = ocarina doesn't hear buttons
 }
 
 /**

@@ -29,7 +29,8 @@
             },
             "Playback": {
                 "DpadOcarina": 1,
-                "NoDropOcarinaInput": 1
+                "NoDropOcarinaInput": 1,
+                "RightStickOcarina": 1
             },
             "Player": {
                 "ClimbSpeed": 3,
