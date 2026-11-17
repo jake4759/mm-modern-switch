@@ -160,6 +160,16 @@ std::string portArchivePath = "";
 static bool shipArchiveVersionMatch = false;
 
 OTRGlobals::OTRGlobals() {
+#ifdef __SWITCH__
+    // MM Modern: always use /switch/2ship/ for the game files, even when launched from somewhere else
+    // (emulators like Eden/Ryujinx don't start homebrew in the .nro's own folder).
+    {
+        std::error_code ec;
+        if (std::filesystem::exists("sdmc:/switch/2ship", ec)) {
+            std::filesystem::current_path("sdmc:/switch/2ship", ec);
+        }
+    }
+#endif
     context = Ship::Context::CreateUninitializedInstance("2 Ship 2 Harkinian", appShortName, "2ship2harkinian.json");
 
     portArchivePath = Ship::Context::LocateFileAcrossAppDirs("2ship.o2r");
