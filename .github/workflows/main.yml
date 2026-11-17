@@ -135,3 +135,34 @@ jobs:
           (made with 2Ship2Harkinian 5.0.1 on PC) to /switch/2ship/. See the README for details.
         files: MM-Modern-Switch.zip
         make_latest: true
+
+  # Test build: the unchanged Switch port, built the same way, to tell toolchain problems from MM Modern bugs.
+  build-switch-vanilla:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:latest
+    steps:
+    - name: Install tools
+      run: |
+        apt-get update
+        apt-get install -y ninja-build python3 git curl zip
+        dkp-pacman -Syu --noconfirm --needed switch-sdl2 switch-glad switch-libpng switch-zlib switch-bzip2 switch-libopus switch-opusfile switch-libvorbis switch-libogg switch-mesa switch-glm || true
+    - name: Checkout unchanged port
+      uses: actions/checkout@v6
+      with:
+        repository: reflex909/2ship2harkinian-Switch
+        ref: e1b0436d3c580e193d68fe9dbc915522074aff32
+        submodules: recursive
+    - name: Build
+      run: |
+        git config --global --add safe.directory '*'
+        mkdir -p mm/switch && curl -sSfL https://raw.githubusercontent.com/${{ github.repository }}/main/mm/switch/2s2hIcon.png -o mm/switch/2s2hIcon.png
+        /opt/devkitpro/portlibs/switch/bin/aarch64-none-elf-cmake -H. -Bbuild-switch -GNinja -DCMAKE_BUILD_TYPE:STRING=Release
+        cmake --build build-switch --config Release -j4
+        mkdir -p out && cp "$(find build-switch -name '*.nro' | head -n1)" out/2ship-vanilla-test.nro
+    - name: Upload
+      uses: actions/upload-artifact@v7
+      with:
+        name: vanilla-test-nro
+        path: out
+        retention-days: 14
