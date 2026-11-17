@@ -1,0 +1,115 @@
+name: generate-builds
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+
+  generate-2ship-otr:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Git Checkout
+      uses: actions/checkout@v6
+      with:
+        submodules: true
+    - name: Configure ccache
+      uses: hendrikmuhs/ccache-action@v1.2.22
+      with:
+        save: ${{ github.ref_name == github.event.repository.default_branch }}
+        key: ${{ runner.os }}-otr-ccache-${{ github.ref }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-otr-ccache-${{ github.ref }}
+          ${{ runner.os }}-otr-ccache
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y $(cat .github/workflows/apt-deps.txt) libzip-dev zipcmp zipmerge ziptool
+    - name: Restore Cached deps folder
+      uses: actions/cache/restore@v5
+      with:
+        key: ${{ runner.os }}-deps-${{ github.ref }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-deps-${{ github.ref }}-
+          ${{ runner.os }}-deps-
+        path: deps
+    - name: Create deps folder
+      run: mkdir -p deps
+    - name: Install latest SDL
+      run: |
+        export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        if [ ! -d "deps/SDL2-2.30.3" ]; then
+          wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.3/SDL2-2.30.3.tar.gz
+          tar -xzf SDL2-2.30.3.tar.gz -C deps
+        fi
+        cd deps/SDL2-2.30.3
+        ./configure --enable-hidapi-libusb
+        make -j 10
+        sudo make install
+        sudo cp -av /usr/local/lib/libSDL* /lib/x86_64-linux-gnu/
+    - name: Install latest tinyxml2
+      run: |
+        sudo apt-get remove libtinyxml2-dev
+        export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        if [ ! -d "deps/tinyxml2-10.0.0" ]; then
+          wget https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz
+          tar -xzf 10.0.0.tar.gz -C deps
+        fi
+        cd deps/tinyxml2-10.0.0
+        mkdir -p build
+        cd build
+        cmake ..
+        make
+        sudo make install
+    - name: Generate 2ship.o2r
+      run: |
+        export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        cmake --no-warn-unused-cli -H. -Bbuild-cmake -GNinja -DCMAKE_BUILD_TYPE:STRING=Release
+        cmake --build build-cmake --config Release --target Generate2ShipOtr -j3
+    - name: Upload 2ship.o2r
+      uses: actions/upload-artifact@v7
+      with:
+        name: 2ship.o2r
+        path: 2ship.o2r
+        retention-days: 3
+
+  build-switch:
+    needs: generate-2ship-otr
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:latest
+    steps:
+    - name: Install tools
+      run: |
+        apt-get update
+        apt-get install -y ninja-build python3 git curl zip
+        dkp-pacman -Syu --noconfirm --needed switch-sdl2 switch-glad switch-libpng switch-zlib switch-bzip2 switch-libopus switch-opusfile switch-libvorbis switch-libogg switch-mesa switch-glm || true
+    - name: Git Checkout
+      uses: actions/checkout@v6
+      with:
+        submodules: true
+    - name: Build Switch .nro
+      run: |
+        git config --global --add safe.directory '*'
+        /opt/devkitpro/portlibs/switch/bin/aarch64-none-elf-cmake -H. -Bbuild-switch -GNinja -DCMAKE_BUILD_TYPE:STRING=Release
+        cmake --build build-switch --config Release -j4
+        find build-switch -name "*.nro"
+    - name: Download 2ship.o2r
+      uses: actions/download-artifact@v7
+      with:
+        name: 2ship.o2r
+        path: o2r
+    - name: Package
+      run: |
+        mkdir -p out/switch/2ship
+        cp "$(find build-switch -name '*.nro' | head -n1)" out/switch/2ship/2ship.nro
+        cp o2r/2ship.o2r out/switch/2ship/
+        cp switch-pack/2ship2harkinian.json out/switch/2ship/
+        cp switch-pack/README.txt out/ || true
+    - name: Upload
+      uses: actions/upload-artifact@v7
+      with:
+        name: MM-Modern-Switch
+        path: out
+        retention-days: 30
