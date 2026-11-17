@@ -64,6 +64,7 @@ CrowdControl* CrowdControl::Instance;
 
 #include <libultraship/libultraship.h>
 #include <libultraship/controller/controldeck/ControlDeck.h>
+#include <libultraship/controller/controldevice/controller/mapping/ControllerDefaultMappings.h>
 #include <fast/resource/ResourceType.h>
 #include <BenGui/BenGui.hpp>
 #include <BenGui/BenMenu.h>
@@ -174,6 +175,32 @@ OTRGlobals::OTRGlobals() {
     context->InitConsoleVariables();
 
 
+    // MM Modern: remake-style default layout (only used when no controls have been saved yet).
+    //   A = A (action)   B = jump (N64 L)   Y = sword (N64 B)   X = Tatl (C-Up)
+    //   R = quick item menu (C-Left)   ZR = use item (C-Right)   ZL = target (Z)   L = shield (N64 R)
+    auto modernDefaults = std::make_shared<LUS::ControllerDefaultMappings>(
+        std::unordered_map<CONTROLLERBUTTONS_T, std::unordered_set<Ship::KbScancode>>(),
+        std::unordered_map<Ship::StickIndex, std::vector<std::pair<Ship::Direction, Ship::KbScancode>>>(),
+        std::unordered_map<CONTROLLERBUTTONS_T, std::unordered_set<SDL_GameControllerButton>>({
+            { BTN_A, { SDL_CONTROLLER_BUTTON_A } },
+            { BTN_L, { SDL_CONTROLLER_BUTTON_B } },
+            { BTN_B, { SDL_CONTROLLER_BUTTON_Y } },
+            { BTN_CUP, { SDL_CONTROLLER_BUTTON_X } },
+            { BTN_CLEFT, { SDL_CONTROLLER_BUTTON_RIGHTSHOULDER } },
+            { BTN_R, { SDL_CONTROLLER_BUTTON_LEFTSHOULDER } },
+            { BTN_START, { SDL_CONTROLLER_BUTTON_START } },
+            { BTN_DUP, { SDL_CONTROLLER_BUTTON_DPAD_UP } },
+            { BTN_DDOWN, { SDL_CONTROLLER_BUTTON_DPAD_DOWN } },
+            { BTN_DLEFT, { SDL_CONTROLLER_BUTTON_DPAD_LEFT } },
+            { BTN_DRIGHT, { SDL_CONTROLLER_BUTTON_DPAD_RIGHT } },
+        }),
+        std::unordered_map<Ship::StickIndex, std::vector<std::pair<Ship::Direction, SDL_GameControllerButton>>>(),
+        std::unordered_map<CONTROLLERBUTTONS_T, std::vector<std::pair<SDL_GameControllerAxis, int32_t>>>({
+            { BTN_Z, { { SDL_CONTROLLER_AXIS_TRIGGERLEFT, 1 } } },
+            { BTN_CRIGHT, { { SDL_CONTROLLER_AXIS_TRIGGERRIGHT, 1 } } },
+        }),
+        std::unordered_map<Ship::StickIndex,
+                           std::vector<std::pair<Ship::Direction, std::pair<SDL_GameControllerAxis, int32_t>>>>());
     auto controlDeck = std::make_shared<LUS::ControlDeck>(std::vector<CONTROLLERBUTTONS_T>({
         BTN_CUSTOM_MODIFIER1,
         BTN_CUSTOM_MODIFIER2,
@@ -185,7 +212,12 @@ OTRGlobals::OTRGlobals() {
         BTN_CUSTOM_OCARINA_DISABLE_SONGS,
         BTN_CUSTOM_OCARINA_PITCH_UP,
         BTN_CUSTOM_OCARINA_PITCH_DOWN,
-    }));
+    }), modernDefaults,
+        std::unordered_map<CONTROLLERBUTTONS_T, std::string>({
+            { BTN_A, "A" }, { BTN_B, "B" }, { BTN_L, "L" }, { BTN_R, "R" }, { BTN_Z, "Z" }, { BTN_START, "Start" },
+            { BTN_CLEFT, "CLeft" }, { BTN_CRIGHT, "CRight" }, { BTN_CUP, "CUp" }, { BTN_CDOWN, "CDown" },
+            { BTN_DLEFT, "DLeft" }, { BTN_DRIGHT, "DRight" }, { BTN_DUP, "DUp" }, { BTN_DDOWN, "DDown" },
+        }));
     context->InitControlDeck(controlDeck);
     context->InitResourceManager({ portArchivePath }, {}, 3, true);
     context->InitConsole();

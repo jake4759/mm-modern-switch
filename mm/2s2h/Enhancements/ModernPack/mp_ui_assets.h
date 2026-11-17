@@ -1,0 +1,51 @@
+#ifndef UI_ASSETS_H
+#define UI_ASSETS_H
+#include "ultra64.h"
+extern u8 gUiFontGlyphs[194560];
+extern f32 gUiFontAdvance[95];
+#define UI_FONT_CELL 64
+#define UI_FONT_CAP_TOP 16
+#define UI_FONT_BASELINE 48
+#define UI_FONT_CAP_HEIGHT 32
+extern u8 gUiLabelGlyphs[73728];
+extern f32 gUiLabelAdvance[36];
+extern u8 gUiLabelInkL[36];
+extern u8 gUiLabelInkR[36];
+#define UI_LABEL_CAP_TOP 16
+extern u8 gUiHandGlyphs[126976];
+extern f32 gUiHandAdvance[62];
+extern u8 gUiHandInkL[62];
+extern u8 gUiHandInkR[62];
+#define UI_HAND_CAP_TOP 15
+extern u8 gUiTileFrameTex[4096];
+extern u8 gUiRemakeFrameTex[4096];
+extern u8 gUiHandFillTex[4096];
+extern u8 gUiHandInkTex[4096];
+extern u8 gUiGlowFrameTex[4096];
+extern u8 gUiKeyCapTex[4096];
+extern u8 gUiDotTex[512];
+extern u8 gUiDpadTex[2048];
+extern u8 gUiFairyTex[3872];
+extern u8 gUiBtnSquareTex[2048];
+extern u8 gUiBtnCircleTex[2048];
+extern u8 gUiBtnTriangleTex[2048];
+extern u8 gUiBtnCrossTex[2048];
+extern u8 gUiBtnBlankTex[2048];
+extern u8 gUiGlyphSquareTex[2048];
+extern u8 gUiGlyphCircleTex[2048];
+extern u8 gUiGlyphTriangleTex[2048];
+extern u8 gUiGlyphCrossTex[2048];
+extern u8 gUiRingTex[2048];
+extern u8 gUiDiaTriangleTex[2048];
+extern u8 gUiDiaTriangleOnTex[2048];
+extern u8 gUiDiaSquareTex[2048];
+extern u8 gUiDiaSquareOnTex[2048];
+extern u8 gUiDiaCrossTex[2048];
+extern u8 gUiDiaCrossOnTex[2048];
+extern u8 gUiDiaCircleTex[2048];
+extern u8 gUiDiaCircleOnTex[2048];
+extern u8 gUiDiaBlankTex[2048];
+extern u8 gUiChevronLTex[1024];
+extern u8 gUiChevronRTex[1024];
+extern u8 gUiPanelTex[2048];
+#endif

@@ -4,6 +4,7 @@
  * Description:
  */
 
+#include "2s2h/Enhancements/ModernPack/mp_common.h"
 #include "z_file_select.h"
 #include "overlays/gamestates/ovl_opening/z_opening.h"
 #include "z64rumble.h"
@@ -2389,7 +2390,7 @@ s16 D_808147C8[] = { 90, 90, 86 };
 
 void FileSelect_Main(GameState* thisx) {
     FileSelectState* this = (FileSelectState*)thisx;
-    Input* input = CONTROLLER1(&this->state);
+    Input* input = (ModernPack_OnFileSelectMain(thisx), CONTROLLER1(&this->state));
     s32 texIndex;
     s32 pad;
 

@@ -1,3 +1,4 @@
+#include "2s2h/Enhancements/ModernPack/mp_common.h"
 #include "z64.h"
 #include "regs.h"
 #include "functions.h"
@@ -971,6 +972,8 @@ void Play_UpdateMain(PlayState* this) {
     Input* input = this->state.input;
     s32 sp5C = false;
     u8 freezeFlashTimer;
+
+    ModernPack_OnPlayUpdateMain(this); // MM Modern: controls
 
     gSegments[4] = OS_K0_TO_PHYSICAL(this->objectCtx.slots[this->objectCtx.mainKeepSlot].segment);
     gSegments[5] = OS_K0_TO_PHYSICAL(this->objectCtx.slots[this->objectCtx.subKeepSlot].segment);

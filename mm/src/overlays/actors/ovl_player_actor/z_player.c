@@ -47,6 +47,7 @@
 
 #include "2s2h/BenPort.h"
 #include "2s2h/GameInteractor/GameInteractor.h"
+#include "2s2h/Enhancements/ModernPack/mp_common.h"
 #include "2s2h/CustomMessage/CustomMessage.h"
 #include <libultraship/bridge/consolevariablebridge.h>
 
@@ -3837,7 +3838,13 @@ EquipSlot func_8082FDC4(void) {
 /**
  * Handles the high level item usage and changing process based on the B and C buttons.
  */
+static void Player_ProcessItemButtons_Vanilla(Player* this, PlayState* play);
 void Player_ProcessItemButtons(Player* this, PlayState* play) {
+    Player_ProcessItemButtons_Vanilla(this, play);
+    ModernPack_AfterItemButtons(this, play, sPlayerControlInput); // MM Modern: D-Pad Left = Ocarina
+}
+
+static void Player_ProcessItemButtons_Vanilla(Player* this, PlayState* play) {
     if (this->stateFlags1 & (PLAYER_STATE1_CARRYING_ACTOR | PLAYER_STATE1_20000000)) {
         return;
     }
@@ -4356,7 +4363,7 @@ bool func_80830FD4(PlayState* play) {
 
 bool func_80831010(Player* this, PlayState* play) {
     if ((this->unk_AA5 == PLAYER_UNKAA5_0) || (this->unk_AA5 == PLAYER_UNKAA5_3)) {
-        if (Player_IsZTargeting(this) || (this->focusActor != NULL) ||
+        if (ModernPack_ThirdPersonAimOn() || Player_IsZTargeting(this) || (this->focusActor != NULL) ||
             (Camera_CheckValidMode(Play_GetCamera(play, CAM_ID_MAIN), CAM_MODE_BOWARROW) == 0)) {
             return true;
         }
@@ -5253,6 +5260,8 @@ s32 Player_CalcSpeedAndYawFromControlStick(PlayState* play, Player* this, f32* o
 
             *outSpeedTarget = (*outSpeedTarget * 0.14f) - (8.0f * floorPitchInfluence * floorPitchInfluence);
             *outSpeedTarget = CLAMP(*outSpeedTarget, 0.0f, speedCap);
+            // MM Modern: sprint and faster swimming
+            *outSpeedTarget *= ModernPack_SpeedScale(this, speedMode == SPEED_MODE_LINEAR);
 
             //! FAKE
             if (floorPitchInfluence) {}
@@ -5518,6 +5527,15 @@ s32 Player_TryActionHandlerList(PlayState* play, Player* this, s8* actionHandler
 
         if (!(this->stateFlags3 & PLAYER_STATE3_START_CHANGING_HELD_ITEM) &&
             (Player_UpperAction_ChangeHeldItem != this->upperActionFunc)) {
+            // #region MM Modern: manual jump
+            if (((actionHandlerList == sActionHandlerList1) || (actionHandlerList == sActionHandlerList2) ||
+                 (actionHandlerList == sActionHandlerList3) || (actionHandlerList == sActionHandlerList4) ||
+                 (actionHandlerList == sActionHandlerList5) || (actionHandlerList == sActionHandlerListIdle) ||
+                 (actionHandlerList == sActionHandlerList8) || (actionHandlerList == sActionHandlerList9)) &&
+                ModernPack_TryJump(this, play)) {
+                return true;
+            }
+            // #endregion
             // Process all entries in the Action Handler List with a positive index
             while (*actionHandlerList >= 0) {
                 if (sActionHandlerFuncs[*actionHandlerList](this, play)) {
@@ -12570,6 +12588,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     f32 temp_fv0;
     f32 temp_fv1;
 
+    ModernPack_UpdateSprint(this, play, input); // MM Modern
     sPlayerControlInput = input;
     if (this->unk_D6A < 0) {
         this->unk_D6A++;
@@ -16732,7 +16751,16 @@ void Player_Action_49(Player* this, PlayState* play) {
     }
 }
 
+static void Player_Action_50_Vanilla(Player* this, PlayState* play);
+// MM Modern: holding A while climbing runs the climbing step twice per frame.
 void Player_Action_50(Player* this, PlayState* play) {
+    Player_Action_50_Vanilla(this, play);
+    if ((this->actionFunc == Player_Action_50) && ModernPack_FastClimb(this, sPlayerControlInput)) {
+        Player_Action_50_Vanilla(this, play);
+    }
+}
+
+static void Player_Action_50_Vanilla(Player* this, PlayState* play) {
     s32 yStick = sPlayerControlInput->rel.stick_y;
     s32 xStick = sPlayerControlInput->rel.stick_x;
     f32 var_fv0;

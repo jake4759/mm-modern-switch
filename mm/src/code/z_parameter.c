@@ -1,3 +1,4 @@
+#include "2s2h/Enhancements/ModernPack/mp_common.h"
 #include "global.h"
 #include "PR/gs2dex.h"
 #include "sys_cfb.h"
@@ -8915,7 +8916,15 @@ TexturePtr sStoryTLUTs[] = {
     gStoryGiantsLeavingTLUT,
 };
 
+static void Interface_Draw_Vanilla(PlayState* play);
+// MM Modern: remake-style HUD drawn on top of (and partly replacing) the game's own.
 void Interface_Draw(PlayState* play) {
+    ModernPack_BeforeInterfaceDraw(play);
+    Interface_Draw_Vanilla(play);
+    ModernPack_AfterInterfaceDraw(play);
+}
+
+static void Interface_Draw_Vanilla(PlayState* play) {
     s32 pad;
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     Player* player = GET_PLAYER(play);
