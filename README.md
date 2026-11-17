@@ -1,87 +1,44 @@
-[comment]: <> (Todo: Make Light Mode Image)
-[comment]: <> (Todo: Make Dark Mode Image)
+# MM Modern for Switch
 
-# 2 Ship 2 Harkinian
+**Majora's Mask on a modded Nintendo Switch, with modern quality-of-life features.** The aim is for it to feel as
+close as possible to the Ocarina of Time remake in controls and HUD style, without changing enemies, items or story.
 
-## Discord
+This is a fork of the [2 Ship 2 Harkinian](https://github.com/HarbourMasters/2ship2harkinian) Switch port
+(via [reflex909/2ship2harkinian-Switch](https://github.com/reflex909/2ship2harkinian-Switch)) with the
+"MM Modern" features from the PC mod built in. **No game data is included**: you need your own Majora's Mask ROM.
 
-Official Discord: https://discord.com/invite/shipofharkinian
+## What it adds
 
-If you're having any trouble after reading through this `README`, feel free ask for help in the 2 Ship 2 Harkinian Support text channels. Please keep in mind that we do not condone piracy.
+| | |
+|---|---|
+| **Controls** | A = action · B = jump · Y = sword · X = Tatl · R (hold) = quick item menu · ZR = use item · ZL = target · L = shield |
+| **Movement** | Jump button (Deku Scrub too), sprint (hold A after a roll), faster climbing and swimming, auto-shield when locked on |
+| **Aiming** | Bow and Hookshot aim over the shoulder: no first-person view |
+| **Quick item menu** | Hold R, flick the stick, let go to equip. Y sorts by recently used |
+| **HUD** | Remake-style item box, Tatl and D-pad icons, fading "Talk" prompt near Link, minimap in the bottom right |
+| **D-pad** | Left = Ocarina · Right = Tatl · Up tap = minimap / hold = Bombers' Notebook · hold Down = quick save |
+| **Text** | A, B or Y shows the current text box at once (only that box) |
+| **Cutscenes** | Press X, then + to skip to gameplay. Every story event still happens |
+| **Saving** | Save anywhere: pause menu Y, or hold D-pad Down. Pause menu X twice = back to title |
+| **Songbook** | While playing the ocarina, ZL opens your learned songs on a staff, and A plays them back |
 
-# Quick Start
+It also comes with a settings file that turns on 2Ship's own time-savers (faster chests and doors, easier masks,
+better Song of Double Time, autosave and more).
 
-2Ship does not include any copyrighted assets.  You are required to provide a supported copy of the game.
+## Install
 
-### 1. Verify your ROM dump
-You can verify you have dumped a supported copy of the game by using the compatibility checker at https://2ship.equipment/. If you'd prefer to manually validate your ROM dump, you can cross-reference its `sha1` hash with the hashes [here](docs/supportedHashes.json).
+1. Download **MM-Modern-Switch** from the latest successful run on the [Actions](../../actions) tab.
+2. Copy its `switch` folder to the root of your SD card.
+3. Add **`mm.o2r`** to `/switch/2ship/`. Make it from your own Majora's Mask N64 (US) ROM with
+   2Ship2Harkinian **5.0.1 "Battler Bravo"** on PC.
+4. Hold **R** while starting any game to open the homebrew menu (not from the Album), then open MM Modern.
 
-### 2. Download 2 Ship 2 Harkinian from [Releases](https://github.com/HarbourMasters/2Ship2Harkinian/releases)
+## Building
 
-### 3. Launch the Game!
-#### Windows
-* Extract the zip
-* Launch `2ship.exe`
+Every push builds automatically with GitHub Actions (`.github/workflows/main.yml`) using the devkitPro
+`devkita64` container. The new code is in `mm/2s2h/Enhancements/ModernPack/`.
 
-#### Linux
-* Place your supported copy of the game in the same folder as the appimage.
-* Execute `2ship.appimage`. You may have to `chmod +x` the appimage via terminal.
+## Credits
 
-#### macOS
-* Run `2ship.app`.
-* When prompted, select your supported copy of the game.
-
-### 4. Play!
-
-Congratulations, you are now sailing with 2 Ship 2 Harkinian! Have fun!
-
-# Configuration
-
-### Default keyboard configuration
-| N64 | A | B | Z | Start | Analog stick | C buttons | D-Pad |
-| - | - | - | - | - | - | - | - |
-| Keyboard | X | C | Z | Space | WASD | Arrow keys | TFGH |
-
-### Other shortcuts
-| Keys | Action |
-| - | - |
-| F1 | Toggle menubar |
-| F11 | Fullscreen |
-| Tab | Toggle Alternate assets |
-| Ctrl+R | Reset |
-
-### Graphics Backends
-Currently, there are three rendering APIs supported: DirectX 11 (Windows), OpenGL (all platforms), and Metal (macOS). You can change which API to use in the `Settings` menu of the menubar, which requires a restart.
-
-If you're having an issue with crashing, you can also change the API manually in the `2ship2harkinian.json` file by finding the `"Backend": {` section and updating the backend ID and name. Be sure to use one of the valid values:
-
-- `0` = DirectX 11 (default on Windows)
-- `1` = OpenGL
-- `2` = Metal (default on macOS)
-
-# Custom Assets
-
-Custom assets are packed in `.o2r` or `.otr` files. To use custom assets, place them in the `mods` folder.
-
-If you're interested in creating and/or packing your own custom asset `.o2r`/`.otr` files, check out the following tools:
-* [**retro - OTR and O2R generator**](https://github.com/HarbourMasters64/retro)
-* [**fast64 - Blender plugin (Note that MM is not fully supported at this time)**](https://github.com/HarbourMasters/fast64)
-
-# Development
-
-If you want to manually compile 2S2H, please consult the [building instructions](docs/BUILDING.md).
-
-# Nightly Builds
-If you want to playtest a continuous integration build, you can find them at the links below. Keep in mind that these are for playtesting only, and you will likely encounter bugs and possibly crashes. 
-
-* [Windows](https://nightly.link/HarbourMasters/2ship2harkinian/workflows/main/develop/2ship-windows.zip)
-* [Linux](https://nightly.link/HarbourMasters/2ship2harkinian/workflows/main/develop/2ship-linux.zip)
-* [Mac](https://nightly.link/HarbourMasters/2ship2harkinian/workflows/main/develop/2ship-mac.zip)
-
-<a href="https://github.com/Kenix3/libultraship/">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/poweredbylus.darkmode.png">
-    <img alt="Powered by libultraship" src="./docs/poweredbylus.lightmode.png">
-  </picture>
-</a>
-
+2 Ship 2 Harkinian by HarbourMasters and contributors (see `docs/2SHIP_README.md` and `LICENSE`).
+Switch port by its respective authors. MM Modern features ported from the Zelda64Recomp mod.
