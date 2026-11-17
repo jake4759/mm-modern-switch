@@ -109,6 +109,13 @@ jobs:
         cp o2r/2ship.o2r out/switch/2ship/
         cp switch-pack/settings.json out/switch/2ship/2ship2harkinian.json
         cp switch-pack/README.txt out/ || true
+    - name: Upload debug symbols
+      uses: actions/upload-artifact@v7
+      with:
+        name: debug-elf
+        path: build-switch/mm/*.elf
+        retention-days: 30
+        if-no-files-found: warn
     - name: Upload
       uses: actions/upload-artifact@v7
       with:
