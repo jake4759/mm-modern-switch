@@ -58,6 +58,9 @@ void CutsceneFF_BeforeUpdate(PlayState* play);
 void CutsceneFF_AfterUpdate(void);
 s32 MP_CanSaveHere(PlayState* play);
 
+void MP_Breadcrumb(const char* what);
+void MP_InstallCrashLogging(void);
+
 // Called from the game code (edited in place)
 void ModernPack_OnPlayUpdateMain(PlayState* play);
 void ModernPack_OnFileSelectMain(GameState* thisx);

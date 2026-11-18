@@ -49,3 +49,45 @@ extern "C" s32 MP_LabelStyle(void) {
     int c = CVarGetInteger("gModernPack.button_labels", 1);
     return (c < 0 || c > 2) ? 1 : c;
 }
+
+// ---- Startup breadcrumbs: writes each startup step to mm-modern-boot.txt (next to the .nro), so a crash
+// on a console with no debugger still shows how far the game got. Also records the message of any
+// uncaught C++ exception, which otherwise only shows "The software was closed because an error occurred".
+#include <cstdio>
+#include <exception>
+#include <typeinfo>
+
+static int sCrumbCount = 0;
+
+extern "C" void MP_Breadcrumb(const char* what) {
+    if (sCrumbCount++ > 400) {
+        return;
+    }
+    FILE* f = fopen(sCrumbCount == 1 ? "mm-modern-boot.txt" : "mm-modern-boot.txt", sCrumbCount == 1 ? "w" : "a");
+    if (f != nullptr) {
+        fprintf(f, "%s\n", what);
+        fflush(f);
+        fclose(f);
+    }
+}
+
+static void MP_Terminate() {
+    std::exception_ptr ep = std::current_exception();
+    if (ep) {
+        try {
+            std::rethrow_exception(ep);
+        } catch (const std::exception& e) {
+            std::string s = std::string("UNCAUGHT EXCEPTION: ") + typeid(e).name() + ": " + e.what();
+            MP_Breadcrumb(s.c_str());
+        } catch (...) {
+            MP_Breadcrumb("UNCAUGHT EXCEPTION (unknown type)");
+        }
+    } else {
+        MP_Breadcrumb("std::terminate called without an exception");
+    }
+    abort();
+}
+
+extern "C" void MP_InstallCrashLogging(void) {
+    std::set_terminate(MP_Terminate);
+}

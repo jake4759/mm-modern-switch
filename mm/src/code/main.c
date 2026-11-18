@@ -52,6 +52,7 @@ s32 gScreenHeight = SCREEN_HEIGHT;
 size_t gSystemHeapSize = 0;
 
 void InitOTR(int argc, char* argv[]);
+void MP_Breadcrumb(const char* what);
 void Heaps_Free(void);
 #ifdef __GNUC__
 #define SDL_main main
@@ -82,8 +83,10 @@ int SDL_main(int argc, char* argv[] /* void* arg*/) {
 #endif // _WIN32
 
     InitOTR(argc, argv);
+    MP_Breadcrumb("InitOTR done");
     CrashHandlerRegisterCallback(CrashHandler_PrintExt);
     Heaps_Alloc();
+    MP_Breadcrumb("Heaps_Alloc done");
 
     gScreenWidth = SCREEN_WIDTH;
     gScreenHeight = SCREEN_HEIGHT;
@@ -98,6 +101,7 @@ int SDL_main(int argc, char* argv[] /* void* arg*/) {
     SystemHeap_Init(sysHeap, SYSTEM_HEAP_SIZE);
 
     Regs_Init();
+    MP_Breadcrumb("Regs_Init done");
 
     R_ENABLE_ARENA_DBG = 0;
 
@@ -109,6 +113,7 @@ int SDL_main(int argc, char* argv[] /* void* arg*/) {
 
     AudioMgr_Init(&sAudioMgr, STACK_TOP(sAudioStack), Z_PRIORITY_AUDIOMGR, Z_THREAD_ID_AUDIOMGR, &gSchedContext,
                   &gIrqMgr);
+MP_Breadcrumb("AudioMgr_Init done");
 #if 0
     StackCheck_Init(&sSchedStackInfo, sSchedStack, STACK_TOP(sSchedStack), 0, 0x100, "sched");
     Sched_Init(&gSchedContext, STACK_TOP(sSchedStack), Z_PRIORITY_SCHED, gViConfigModeType, 1, &gIrqMgr);
@@ -129,6 +134,7 @@ int SDL_main(int argc, char* argv[] /* void* arg*/) {
     osStartThread(&gGraphThread);
 #endif
 
+    MP_Breadcrumb("Graph_ThreadEntry start");
     Graph_ThreadEntry(0);
 
     exit = false;

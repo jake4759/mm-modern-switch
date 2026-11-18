@@ -1,3 +1,7 @@
+extern "C" {
+void MP_Breadcrumb(const char* what);
+void MP_InstallCrashLogging(void);
+}
 #include "BenPort.h"
 #if not defined(__SWITCH__) && not defined(__WIIU__)
 #include "Extractor/Extract.h"
@@ -1031,34 +1035,47 @@ bool VerifyArchiveVersion(ArchiveVersion version) {
 }
 
 extern "C" void InitOTR(int argc, char* argv[]) {
+    MP_InstallCrashLogging();
+#ifdef __SWITCH__
+    {
+        std::error_code ec;
+        if (std::filesystem::exists("sdmc:/switch/2ship", ec)) {
+            std::filesystem::current_path("sdmc:/switch/2ship", ec);
+        }
+    }
+#endif
+    MP_Breadcrumb("InitOTR start");
     OTRGlobals::Instance = new OTRGlobals();
+    MP_Breadcrumb("OTRGlobals created");
     OTRGlobals::Instance->RunExtract(argc, argv);
+    MP_Breadcrumb("RunExtract done");
 
     OTRGlobals::Instance->Initialize();
+    MP_Breadcrumb("Initialize done");
 
     std::shared_ptr<Ship::Config> conf = OTRGlobals::Instance->context->GetConfig();
     conf->RegisterVersionUpdater(std::make_shared<Ben::ConfigVersion1Updater>());
-    conf->RunVersionUpdates();
+    conf->RunVersionUpdates(); MP_Breadcrumb("conf->RunVersionUpdates();");
     Ship::Context::GetRawInstance()->GetConsoleVariables()->Save();
 
-    GameInteractor::Instance = new GameInteractor();
-    AudioCollection::Instance = new AudioCollection();
-    LoadGuiTextures();
-    ModMenu_LoadArchives();
-    BenGui::SetupGuiElements();
-    ShipInit::InitAll();
-    Rando::Init();
-    GfxPatcher_ApplyNecessaryAuthenticPatches();
-    DebugConsole_Init();
-    GameInteractor::Instance->RegisterOwnHooks();
-    CustomItem::RegisterHooks();
-    CustomMessage::RegisterHooks();
-    Rando::StaticData::PopulateCheckNames();
+    GameInteractor::Instance = new GameInteractor(); MP_Breadcrumb("GameInteractor::Instance = new GameInteractor();");
+    AudioCollection::Instance = new AudioCollection(); MP_Breadcrumb("AudioCollection::Instance = new AudioCollection();");
+    LoadGuiTextures(); MP_Breadcrumb("LoadGuiTextures();");
+    ModMenu_LoadArchives(); MP_Breadcrumb("ModMenu_LoadArchives();");
+    BenGui::SetupGuiElements(); MP_Breadcrumb("BenGui::SetupGuiElements();");
+    ShipInit::InitAll(); MP_Breadcrumb("ShipInit::InitAll();");
+    Rando::Init(); MP_Breadcrumb("Rando::Init();");
+    GfxPatcher_ApplyNecessaryAuthenticPatches(); MP_Breadcrumb("GfxPatcher_ApplyNecessaryAuthenticPatches();");
+    DebugConsole_Init(); MP_Breadcrumb("DebugConsole_Init();");
+    GameInteractor::Instance->RegisterOwnHooks(); MP_Breadcrumb("GameInteractor::Instance->RegisterOwnHooks();");
+    CustomItem::RegisterHooks(); MP_Breadcrumb("CustomItem::RegisterHooks();");
+    CustomMessage::RegisterHooks(); MP_Breadcrumb("CustomMessage::RegisterHooks();");
+    Rando::StaticData::PopulateCheckNames(); MP_Breadcrumb("Rando::StaticData::PopulateCheckNames();");
 
-    OTRMessage_Init();
-    OTRAudio_Init();
-    OTRExtScanner();
-    PlayerCustomFlipbooks_Patch();
+    OTRMessage_Init(); MP_Breadcrumb("OTRMessage_Init();");
+    OTRAudio_Init(); MP_Breadcrumb("OTRAudio_Init();");
+    OTRExtScanner(); MP_Breadcrumb("OTRExtScanner();");
+    PlayerCustomFlipbooks_Patch(); MP_Breadcrumb("PlayerCustomFlipbooks_Patch();");
 
     // Just came up with arbitrary numbers that seemed to work, this is
     // usually set once(?) in currently stubbed out areas of code.

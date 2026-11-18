@@ -1,4 +1,5 @@
 #include "prevent_bss_reordering.h"
+#include <stdio.h>
 #include "z64.h"
 #include "regs.h"
 #include "functions.h"
@@ -396,7 +397,17 @@ void RunFrame() {
         runFrameContext.gameState = SystemArena_Malloc(size);
 
         memset(runFrameContext.gameState, 0, size); // fix
+        {
+            void MP_Breadcrumb(const char* what);
+            static char sBuf[64];
+            snprintf(sBuf, sizeof(sBuf), "GameState_Init start (size %d)", (int)size);
+            MP_Breadcrumb(sBuf);
+        }
         GameState_Init(runFrameContext.gameState, runFrameContext.ovl->init, &runFrameContext.gfxCtx);
+        {
+            void MP_Breadcrumb(const char* what);
+            MP_Breadcrumb("GameState_Init done");
+        }
 
         uint64_t freq = GetFrequency();
 
@@ -406,7 +417,18 @@ void RunFrame() {
 
             PadMgr_ThreadEntry(&gPadMgr);
 
-            Graph_Update(&runFrameContext.gfxCtx, runFrameContext.gameState);
+            {
+                void MP_Breadcrumb(const char* what);
+                static int sFrames = 0;
+                if (sFrames < 3) {
+                    MP_Breadcrumb("frame start");
+                }
+                Graph_Update(&runFrameContext.gfxCtx, runFrameContext.gameState);
+                if (sFrames < 3) {
+                    MP_Breadcrumb("frame done");
+                }
+                sFrames++;
+            }
             // ticksB = GetPerfCounter();
 
             // Graph_ProcessGfxCommands(runFrameContext.gfxCtx.workBuffer);
